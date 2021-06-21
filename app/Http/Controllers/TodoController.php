@@ -7,10 +7,14 @@ use Illuminate\Http\Request;
 
 class TodoController extends Controller
 {
-  public function add(Request $request)
+
+  public function index()
   {
-    return view('add');
+    $Todos = Todo::orderBy('created_at', 'asc')->get();
+    //dd($tasks);
+    return view('index', compact('Todos'));
   }
+  
   public function create(Request $request)
   {
     $this->validate($request, Todo::$rules);
@@ -18,35 +22,24 @@ class TodoController extends Controller
     $form = $request->all();
     unset($form['_token_']);
     $Todo->fill($form)->save();
-    return redirect('add');
+    return redirect('/');
   }
 
-  public function edit(Request $request)
-  {
-    $Todo = Todo::find($request->id);
-    return view('edit', ['form' => $Todo]);
-  }
   public function update(Request $request)
   {
     $this->validate($request, Todo::$rules);
+    //dd($this);
     $Todo = Todo::find($request->id);
+    //dd($this);
     $form = $request->all();
     unset($form['_token_']);
     $Todo->fill($form)->save();
-    return redirect('add');
+    return redirect('/');
   }
-
 
   public function delete(Request $request)
   {
-    $Todo = Todo::find($request->id);
-    //dd($Todo);
-    return view('delete', ['form' => $Todo]);
-  }
-
-  public function remove(Request $request)
-  {
     Todo::find($request->id)->delete();
-    return redirect('add');
+    return redirect('/');
   }
 }
